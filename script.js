@@ -9,9 +9,9 @@ let currentDifficulty = 'easy';
 let puzzlePieces = [];
 let countdownInterval;
 let targetBirthday = null;
+let selectedPiece = null; // متغير جديد عشان الموبايل التاتش
 
 // Audio tracks (using placeholder URLs - in real implementation, you'd have actual audio files)
-// In your script.js file
 const audioTracks = [
     {
         title: "Happy Birthday Song",
@@ -61,12 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initializePuzzleGame();
     initializeCountdown();
     initializeEventListeners();
-    
-    // Set initial birthday date to next year
-    const nextYear = new Date();
-    nextYear.setFullYear(nextYear.getFullYear() + 1);
-    nextYear.setMonth(0, 1); // January 1st
-    document.getElementById('birthdayDate').value = nextYear.toISOString().slice(0, 16);
 });
 
 // Initialize event listeners
@@ -155,12 +149,6 @@ function initializeEventListeners() {
         playAgainBtn.addEventListener('click', startNewGame);
     }
     
-    // Birthday date input
-    const birthdayInput = document.getElementById('birthdayDate');
-    if (birthdayInput) {
-        birthdayInput.addEventListener('change', updateCountdown);
-    }
-    
     // Slide indicators
     const indicators = document.querySelectorAll('.indicator');
     indicators.forEach((indicator, index) => {
@@ -174,7 +162,6 @@ function initializeNavigation() {
     const navMenu = document.getElementById('navMenu');
     const navLinks = document.querySelectorAll('.nav-link');
 
-    // Mobile menu toggle
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
             navMenu.classList.toggle('active');
@@ -182,7 +169,6 @@ function initializeNavigation() {
         });
     }
 
-    // Close mobile menu when clicking on a link
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
             if (navMenu) navMenu.classList.remove('active');
@@ -190,7 +176,6 @@ function initializeNavigation() {
         });
     });
 
-    // Navbar scroll effect
     window.addEventListener('scroll', function() {
         const navbar = document.getElementById('navbar');
         if (navbar) {
@@ -204,7 +189,6 @@ function initializeNavigation() {
         }
     });
 
-    // Smooth scrolling for navigation links
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -212,7 +196,7 @@ function initializeNavigation() {
             const targetSection = document.querySelector(targetId);
             
             if (targetSection) {
-                const offsetTop = targetSection.offsetTop - 80; // Account for fixed navbar
+                const offsetTop = targetSection.offsetTop - 80;
                 window.scrollTo({
                     top: offsetTop,
                     behavior: 'smooth'
@@ -226,22 +210,15 @@ function initializeNavigation() {
 function initializeBackgroundAnimations() {
     createConfetti();
     createParticles();
-    
-    // Regenerate confetti every 10 seconds
     setInterval(createConfetti, 10000);
-    
-    // Regenerate particles every 15 seconds
     setInterval(createParticles, 15000);
 }
 
 function createConfetti() {
     const container = document.getElementById('confettiContainer');
     if (!container) return;
-    
-    container.innerHTML = ''; // Clear existing confetti
-    
+    container.innerHTML = '';
     const colors = ['#ff6b9d', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#fd79a8', '#00cec9'];
-    
     for (let i = 0; i < 50; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
@@ -256,9 +233,7 @@ function createConfetti() {
 function createParticles() {
     const container = document.getElementById('particles');
     if (!container) return;
-    
-    container.innerHTML = ''; // Clear existing particles
-    
+    container.innerHTML = '';
     for (let i = 0; i < 30; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
@@ -269,20 +244,13 @@ function createParticles() {
     }
 }
 
-// Celebration function
 function celebrateNow() {
-    // Trigger confetti explosion
     triggerConfettiExplosion();
-    
-    // Play celebration sound (if available)
     if (audioPlayer && !audioPlayer.src) {
-        // If no audio is loaded, just show visual effects
         showCelebrationMessage();
     } else {
         togglePlay();
     }
-    
-    // Scroll to gallery section
     const gallerySection = document.getElementById('gallery');
     if (gallerySection) {
         const offsetTop = gallerySection.offsetTop - 80;
@@ -296,10 +264,7 @@ function celebrateNow() {
 function triggerConfettiExplosion() {
     const container = document.getElementById('confettiContainer');
     if (!container) return;
-    
     const colors = ['#ff6b9d', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#fd79a8', '#00cec9'];
-    
-    // Create burst of confetti
     for (let i = 0; i < 100; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
@@ -307,8 +272,6 @@ function triggerConfettiExplosion() {
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
         container.appendChild(confetti);
-        
-        // Remove confetti after animation
         setTimeout(() => {
             if (confetti.parentNode) {
                 confetti.parentNode.removeChild(confetti);
@@ -336,9 +299,7 @@ function showCelebrationMessage() {
         box-shadow: 0 15px 35px rgba(0,0,0,0.3);
     `;
     message.innerHTML = '🎉 Let the celebration begin! 🎉';
-    
     document.body.appendChild(message);
-    
     setTimeout(() => {
         if (message.parentNode) {
             message.parentNode.removeChild(message);
@@ -348,9 +309,7 @@ function showCelebrationMessage() {
 
 // Gallery Functions
 function initializeGallery() {
-    // Add intersection observer for gallery animations
     const galleryItems = document.querySelectorAll('.gallery-item');
-    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
@@ -373,7 +332,6 @@ function initializeGallery() {
 function changeView(viewType) {
     const gridView = document.getElementById('galleryGrid');
     const slideshowView = document.getElementById('gallerySlideshow');
-    
     if (!gridView || !slideshowView) return;
     
     if (viewType === 'grid') {
@@ -389,7 +347,6 @@ function changeView(viewType) {
 function changeSlide(direction) {
     const slides = document.querySelectorAll('.slide');
     const indicators = document.querySelectorAll('.indicator');
-    
     if (slides.length === 0) return;
     
     slides[currentSlideIndex].classList.remove('active');
@@ -410,20 +367,16 @@ function changeSlide(direction) {
 function jumpToSlide(slideIndex) {
     const slides = document.querySelectorAll('.slide');
     const indicators = document.querySelectorAll('.indicator');
-    
     if (slides.length === 0) return;
     
     slides[currentSlideIndex].classList.remove('active');
     indicators[currentSlideIndex].classList.remove('active');
-    
     currentSlideIndex = slideIndex;
-    
     slides[currentSlideIndex].classList.add('active');
     indicators[currentSlideIndex].classList.add('active');
 }
 
 function startSlideshow() {
-    // Auto-advance slides every 5 seconds
     setInterval(() => {
         changeSlide(1);
     }, 5000);
@@ -431,39 +384,25 @@ function startSlideshow() {
 
 // Music Player Functions
 function initializeMusicPlayer() {
-    // Since we don't have actual audio files, we'll simulate the player
     updateTrackDisplay();
-    
-    // Simulate audio loading
     if (durationDisplay) {
         durationDisplay.textContent = audioTracks[currentTrack].duration;
     }
-    
-    // Progress bar click
     const progressContainer = document.querySelector('.progress-bar');
     if (progressContainer) {
         progressContainer.addEventListener('click', seek);
     }
-    
-    // Simulate time updates
     setInterval(updateProgressBar, 1000);
 }
 
 function togglePlay() {
     isPlaying = !isPlaying;
-    
     if (isPlaying) {
         if (playPauseBtn) playPauseBtn.textContent = '⏸️';
         if (vinylRecord) vinylRecord.classList.add('playing');
-        
-        // In a real implementation, you would start the audio
-        // audioPlayer.play();
     } else {
         if (playPauseBtn) playPauseBtn.textContent = '▶️';
         if (vinylRecord) vinylRecord.classList.remove('playing');
-        
-        // In a real implementation, you would pause the audio
-        // audioPlayer.pause();
     }
 }
 
@@ -478,45 +417,30 @@ function nextTrack() {
 }
 
 function selectTrack(trackIndex) {
-    // Remove active class from all playlist items
     const playlistItems = document.querySelectorAll('.playlist-item');
     playlistItems.forEach(item => item.classList.remove('active'));
-    
-    // Add active class to selected track
     if (playlistItems[trackIndex]) {
         playlistItems[trackIndex].classList.add('active');
     }
-    
     currentTrack = trackIndex;
     switchTrack();
 }
 
 function switchTrack() {
     updateTrackDisplay();
-    
-    // Reset progress
     if (progressBar) progressBar.style.width = '0%';
     if (currentTimeDisplay) currentTimeDisplay.textContent = '0:00';
     if (durationDisplay) durationDisplay.textContent = audioTracks[currentTrack].duration;
-    
-    // Update playlist active state
     const playlistItems = document.querySelectorAll('.playlist-item');
     playlistItems.forEach((item, index) => {
         item.classList.toggle('active', index === currentTrack);
     });
-    
-    // If playing, continue playing new track
-    if (isPlaying) {
-        // In real implementation: audioPlayer.src = audioTracks[currentTrack].src;
-        // audioPlayer.play();
-    }
 }
 
 function updateTrackDisplay() {
     const track = audioTracks[currentTrack];
     const trackTitle = document.getElementById('trackTitle');
     const trackArtist = document.getElementById('trackArtist');
-    
     if (trackTitle) trackTitle.textContent = track.title;
     if (trackArtist) trackArtist.textContent = track.artist;
 }
@@ -524,7 +448,6 @@ function updateTrackDisplay() {
 function changeVolume() {
     if (!volumeSlider) return;
     const volume = volumeSlider.value / 100;
-    // In real implementation: audioPlayer.volume = volume;
 }
 
 function seek(e) {
@@ -533,32 +456,22 @@ function seek(e) {
     const clickX = e.clientX - rect.left;
     const width = rect.width;
     const percentage = (clickX / width) * 100;
-    
     if (progressBar) {
         progressBar.style.width = percentage + '%';
     }
-    
-    // In real implementation, you would seek the audio:
-    // const duration = audioPlayer.duration;
-    // audioPlayer.currentTime = (percentage / 100) * duration;
 }
 
 function updateProgressBar() {
     if (isPlaying && progressBar) {
-        // Simulate progress (in real implementation, use audioPlayer.currentTime)
         let currentWidth = parseFloat(progressBar.style.width) || 0;
-        currentWidth += 0.5; // Simulate progress
-        
+        currentWidth += 0.5;
         if (currentWidth >= 100) {
             currentWidth = 0;
-            nextTrack(); // Auto-advance to next track
+            nextTrack();
         }
-        
         progressBar.style.width = currentWidth + '%';
-        
-        // Update time display (simulated)
         if (currentTimeDisplay) {
-            const minutes = Math.floor(currentWidth * 0.03); // Rough simulation
+            const minutes = Math.floor(currentWidth * 0.03);
             const seconds = Math.floor((currentWidth * 1.8) % 60);
             currentTimeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
@@ -568,7 +481,6 @@ function updateProgressBar() {
 // Puzzle Game Functions
 function initializePuzzleGame() {
     changeDifficulty();
-    startNewGame();
 }
 
 function changeDifficulty() {
@@ -576,40 +488,31 @@ function changeDifficulty() {
     if (!select) return;
     
     currentDifficulty = select.value;
-    
     const puzzleBoard = document.getElementById('puzzleBoard');
     if (!puzzleBoard) return;
     
     let gridSize;
-    
     switch (currentDifficulty) {
-        case 'easy':
-            gridSize = 3;
-            break;
-        case 'medium':
-            gridSize = 4;
-            break;
-        case 'hard':
-            gridSize = 5;
-            break;
+        case 'easy': gridSize = 3; break;
+        case 'medium': gridSize = 4; break;
+        case 'hard': gridSize = 5; break;
     }
     
     puzzleBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-    puzzleBoard.style.width = '300px';
-    puzzleBoard.style.height = '300px';
+    startNewGame();
 }
 
 function startNewGame() {
     clearInterval(gameTimer);
     gameStartTime = Date.now();
     moveCount = 0;
+    selectedPiece = null; // Reset selection
     updateGameStats();
     
     generatePuzzle();
     shufflePuzzle();
     startGameTimer();
     
-    // Hide completion screen
     const gameCompletion = document.getElementById('gameCompletion');
     if (gameCompletion) {
         gameCompletion.style.display = 'none';
@@ -626,7 +529,6 @@ function generatePuzzle() {
     puzzleBoard.innerHTML = '';
     puzzlePieces = [];
     
-    // Use random image from puzzle images
     const imageUrl = puzzleImages[Math.floor(Math.random() * puzzleImages.length)];
     const solutionImage = document.getElementById('solutionImage');
     if (solutionImage) {
@@ -639,7 +541,6 @@ function generatePuzzle() {
         piece.dataset.position = i;
         piece.dataset.correctPosition = i;
         
-        // Calculate background position
         const row = Math.floor(i / gridSize);
         const col = i % gridSize;
         const bgPosX = (col / (gridSize - 1)) * 100;
@@ -647,14 +548,17 @@ function generatePuzzle() {
         
         piece.style.backgroundImage = `url(${imageUrl})`;
         piece.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
-        piece.style.backgroundSize = `${gridSize * 100}%`;
+        piece.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
         
-        // Add drag and drop events
+        // Mouse Drag Events (For PC)
         piece.draggable = true;
         piece.addEventListener('dragstart', handleDragStart);
         piece.addEventListener('dragover', handleDragOver);
         piece.addEventListener('drop', handleDrop);
         piece.addEventListener('dragend', handleDragEnd);
+        
+        // Touch / Click Events (For Mobile and PC fallback)
+        piece.addEventListener('click', handlePieceClick);
         
         puzzleBoard.appendChild(piece);
         puzzlePieces.push(piece);
@@ -664,22 +568,39 @@ function generatePuzzle() {
 function shufflePuzzle() {
     const puzzleBoard = document.getElementById('puzzleBoard');
     if (!puzzleBoard) return;
-    
     const pieces = Array.from(puzzlePieces);
     
-    // Fisher-Yates shuffle
     for (let i = pieces.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
     }
     
-    // Update positions
     pieces.forEach((piece, index) => {
         piece.dataset.position = index;
         puzzleBoard.appendChild(piece);
     });
 }
 
+// ---- Game Logic: Swap Function ----
+function handleSwap(piece1, piece2) {
+    // 1. Swap the dataset positions
+    const tempPos = piece1.dataset.position;
+    piece1.dataset.position = piece2.dataset.position;
+    piece2.dataset.position = tempPos;
+    
+    // 2. Safely swap DOM elements using a temporary placeholder
+    const temp = document.createElement('div');
+    piece1.parentNode.insertBefore(temp, piece1);
+    piece2.parentNode.insertBefore(piece1, piece2);
+    temp.parentNode.insertBefore(piece2, temp);
+    temp.parentNode.removeChild(temp);
+    
+    moveCount++;
+    updateGameStats();
+    checkPuzzleCompletion();
+}
+
+// ---- Game Logic: Drag & Drop (PC) ----
 let draggedElement = null;
 
 function handleDragStart(e) {
@@ -693,25 +614,8 @@ function handleDragOver(e) {
 
 function handleDrop(e) {
     e.preventDefault();
-    
     if (draggedElement && e.target !== draggedElement && e.target.classList.contains('puzzle-piece')) {
-        // Swap positions
-        const draggedPosition = draggedElement.dataset.position;
-        const targetPosition = e.target.dataset.position;
-        
-        draggedElement.dataset.position = targetPosition;
-        e.target.dataset.position = draggedPosition;
-        
-        // Swap DOM positions
-        const parent = draggedElement.parentNode;
-        const nextSibling = draggedElement.nextSibling === e.target ? draggedElement : draggedElement.nextSibling;
-        
-        parent.insertBefore(draggedElement, e.target.nextSibling);
-        parent.insertBefore(e.target, nextSibling);
-        
-        moveCount++;
-        updateGameStats();
-        checkPuzzleCompletion();
+        handleSwap(draggedElement, e.target);
     }
 }
 
@@ -720,12 +624,32 @@ function handleDragEnd(e) {
     draggedElement = null;
 }
 
+// ---- Game Logic: Click/Tap to Swap (Mobile) ----
+function handlePieceClick(e) {
+    const clickedPiece = e.target;
+    
+    if (!selectedPiece) {
+        // لو مفيش قطعة متحددة، نحدد دي
+        selectedPiece = clickedPiece;
+        clickedPiece.classList.add('selected');
+    } else {
+        // لو في قطعة متحددة من الأول
+        if (selectedPiece !== clickedPiece) {
+            // لو داس على قطعة تانية، نبدلهم
+            handleSwap(selectedPiece, clickedPiece);
+        }
+        // في كل الحالات (بدّل أو داس على نفس القطعة مرتين) بنشيل التحديد
+        selectedPiece.classList.remove('selected');
+        selectedPiece = null;
+    }
+}
+
 function checkPuzzleCompletion() {
     const isComplete = puzzlePieces.every(piece => 
         piece.dataset.position === piece.dataset.correctPosition
     );
     
-    if (isComplete) {
+    if (isComplete && moveCount > 0) {
         clearInterval(gameTimer);
         showCompletionMessage();
         triggerConfettiExplosion();
@@ -736,7 +660,6 @@ function showCompletionMessage() {
     const completionDiv = document.getElementById('gameCompletion');
     const finalTime = document.getElementById('finalTime');
     const finalMoves = document.getElementById('finalMoves');
-    
     if (!completionDiv || !finalTime || !finalMoves) return;
     
     const timeElapsed = Math.floor((Date.now() - gameStartTime) / 1000);
@@ -745,14 +668,11 @@ function showCompletionMessage() {
     
     finalTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     finalMoves.textContent = moveCount;
-    
     completionDiv.style.display = 'flex';
 }
 
 function showSolution() {
-    // Sort pieces to correct positions
     puzzlePieces.sort((a, b) => a.dataset.correctPosition - b.dataset.correctPosition);
-    
     const puzzleBoard = document.getElementById('puzzleBoard');
     if (!puzzleBoard) return;
     
@@ -784,47 +704,31 @@ function updateGameStats() {
 }
 
 // Countdown Functions
-function initializeCountdown() {
-    // Set default birthday to next year
-    const nextYear = new Date();
-    nextYear.setFullYear(nextYear.getFullYear() );
-    nextYear.setMonth(0, 1, 0, 0, 0, 0); // January 1st at midnight
+function getNextBirthday() {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    let target = new Date(currentYear, 1, 16, 0, 0, 0);
     
-    const birthdayInput = document.getElementById('birthdayDate');
-    if (birthdayInput) {
-        birthdayInput.value = nextYear.toISOString().slice(0, 16);
+    if (now.getTime() >= target.getTime() + (24 * 60 * 60 * 1000)) {
+        target.setFullYear(currentYear + 1);
     }
-    
+    return target;
+}
+
+function initializeCountdown() {
     updateCountdown();
 }
 
 function updateCountdown() {
-    const birthdayInput = document.getElementById('birthdayDate');
-    if (!birthdayInput) return;
-    
-    const selectedDate = new Date(birthdayInput.value);
-    
-    if (!birthdayInput.value) {
-        const countdownMessage = document.getElementById('countdownMessage');
-        if (countdownMessage) {
-            countdownMessage.innerHTML = '<p>Set your birthday date to start the countdown!</p>';
-        }
-        return;
-    }
-    
-    targetBirthday = selectedDate;
-    
     if (countdownInterval) {
         clearInterval(countdownInterval);
     }
-    
     countdownInterval = setInterval(calculateTimeRemaining, 1000);
-    calculateTimeRemaining(); // Run immediately
+    calculateTimeRemaining();
 }
 
 function calculateTimeRemaining() {
-    if (!targetBirthday) return;
-    
+    targetBirthday = getNextBirthday();
     const now = new Date().getTime();
     const birthdayTime = targetBirthday.getTime();
     const timeDiff = birthdayTime - now;
@@ -836,41 +740,32 @@ function calculateTimeRemaining() {
     const messageDiv = document.getElementById('countdownMessage');
     
     if (timeDiff <= 0) {
-        // Birthday has arrived or passed
         if (daysElement) daysElement.textContent = '00';
         if (hoursElement) hoursElement.textContent = '00';
         if (minutesElement) minutesElement.textContent = '00';
         if (secondsElement) secondsElement.textContent = '00';
         
         if (messageDiv) {
-            messageDiv.innerHTML = '<p class="birthday-celebration">🎉 Happy Birthday! It\'s time to celebrate! 🎂</p>';
+            messageDiv.innerHTML = '<p class="birthday-celebration">🎉 Happy Birthday Fatma! It\'s time to celebrate! 🎂</p>';
             messageDiv.classList.add('birthday-celebration');
         }
-        
-        triggerConfettiExplosion();
-        clearInterval(countdownInterval);
-        
         return;
     }
     
-    // Calculate time units
     const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
     
-    // Update display
     if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
     if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
     if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
     if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
     
-    // Update message
     if (messageDiv) {
         messageDiv.classList.remove('birthday-celebration');
-        
         if (days > 1) {
-            messageDiv.innerHTML = `<p>🎂 ${days} days until your special day!</p>`;
+            messageDiv.innerHTML = `<p>🎂 ${days} days until the special day!</p>`;
         } else if (days === 1) {
             messageDiv.innerHTML = '<p>🎉 Tomorrow is the big day!</p>';
         } else if (hours > 1) {
@@ -898,19 +793,16 @@ function initializeScrollAnimations() {
         });
     }, observerOptions);
     
-    // Observe all sections
     const sections = document.querySelectorAll('section');
     sections.forEach(section => {
         observer.observe(section);
     });
 }
 
-// Initialize scroll animations
 document.addEventListener('DOMContentLoaded', initializeScrollAnimations);
 
 // Keyboard navigation support
 document.addEventListener('keydown', function(e) {
-    // Gallery slideshow keyboard controls
     const slideshowView = document.getElementById('gallerySlideshow');
     if (slideshowView && slideshowView.style.display !== 'none') {
         if (e.key === 'ArrowLeft') {
@@ -919,14 +811,10 @@ document.addEventListener('keydown', function(e) {
             changeSlide(1);
         }
     }
-    
-    // Music player keyboard controls
     if (e.key === ' ' && e.target.tagName !== 'INPUT') {
         e.preventDefault();
         togglePlay();
     }
-    
-    // Puzzle game keyboard controls
     if (e.key === 'n' && e.ctrlKey) {
         e.preventDefault();
         startNewGame();
@@ -935,9 +823,7 @@ document.addEventListener('keydown', function(e) {
 
 // Window resize handler
 window.addEventListener('resize', function() {
-    // Adjust gallery layout on resize
     if (window.innerWidth <= 768) {
-        // Mobile layout adjustments
         changeView('grid');
     }
 });
@@ -945,7 +831,6 @@ window.addEventListener('resize', function() {
 // Page visibility change handler
 document.addEventListener('visibilitychange', function() {
     if (document.hidden) {
-        // Pause music when page is hidden
         if (isPlaying) {
             togglePlay();
         }
@@ -977,13 +862,12 @@ function handleSwipe() {
     const diff = touchStartX - touchEndX;
     
     if (Math.abs(diff) > swipeThreshold) {
-        // Only handle swipes in gallery slideshow
         const slideshowView = document.getElementById('gallerySlideshow');
         if (slideshowView && slideshowView.style.display !== 'none') {
             if (diff > 0) {
-                changeSlide(1); // Swipe left - next slide
+                changeSlide(1);
             } else {
-                changeSlide(-1); // Swipe right - previous slide
+                changeSlide(-1);
             }
         }
     }
