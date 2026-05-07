@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎉 Happy Birthday Celebration 🎂</title>
+    <title>🎉 Fatma's Day 🎂</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <body style="background-image:url('./Pink Purple Star Happy Birthday.png');"></body>
-    <img src="./Birthday1.jpg" alt="test">
+<body style="background-image:url('./Pink Purple Star Happy Birthday.png');">
+    
     <div class="background-animation">
         <div class="floating-balloons">
             <div class="balloon balloon-1">🎈</div>
@@ -24,7 +23,10 @@
 
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">🎂 Birthday Bash</div>
+            <div class="nav-logo" id="surpriseLogo" onclick="triggerHeartsSurprise()">
+                <span class="logo-icon">👑</span>
+                <span class="logo-text">Fatma's<span>Day</span></span>
+            </div>
             <div class="nav-toggle" id="navToggle">
                 <span></span>
                 <span></span>
@@ -41,32 +43,25 @@
     </nav>
 
     <section id="home" class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title animate-bounce">Happy Birthday Fatma!🎉 </h1>
-            <p class="hero-subtitle">Let's celebrate this special day!</p>
-            <div class="birthday-candles">
-                <div class="candle">
-                    <div class="flame"></div>
-                    <div class="wick"></div>
-                    <div class="wax"></div>
-                </div>
-                <div class="candle">
-                    <div class="flame"></div>
-                    <div class="wick"></div>
-                    <div class="wax"></div>
-                </div>
-                <div class="candle">
-                    <div class="flame"></div>
-                    <div class="wick"></div>
-                    <div class="wax"></div>
-                </div>
+        <div class="hero-content glass-card">
+            <button class="hero-badge" onmouseenter="triggerConfettiExplosion()" onclick="triggerConfettiExplosion()">
+                🎉 It's Your Special Day
+            </button>
+            <h1 class="hero-title">Happy Birthday <br><span>Fatma!</span></h1>
+            <p class="hero-subtitle">Wishing you a year filled with endless joy, beautiful moments, and all the success you deserve.</p>
+            
+            <div class="wish-container">
+                <p class="wish-text" id="wishText" onmouseover="makeWishGlow(this)" onmouseout="resetWish(this)">
+                    ✨ Hover to make a wish ✨
+                </p>
             </div>
-            <button class="cta-button" id="celebrateBtn">Start the Celebration! 🎊</button>
+
+            <button class="cta-button pulse-btn" id="celebrateBtn">Start the Celebration! 🎊</button>
         </div>
     </section>
 
     <section id="gallery" class="gallery-section">
-        <div class="container">
+        <div class="container glass-panel">
             <h2 class="section-title">📸 Memory Gallery</h2>
             <div class="gallery-controls">
                 <button class="gallery-btn" id="gridViewBtn">Grid View</button>
@@ -74,42 +69,42 @@
             </div>
             
             <div class="gallery-grid" id="galleryGrid">
-                <div class="gallery-item" data-caption="Birthday Party 2024">
+                <div class="gallery-item glass-element" data-caption="Birthday Party 2024">
                     <img src="image/1.png" alt="Birthday celebration">
                     <div class="gallery-overlay">
                         <h3>New Year Celebration</h3>
                         <p>An amazing celebration with friends and family</p>
                     </div>
                 </div>
-                <div class="gallery-item" data-caption="Cake Time!">
+                <div class="gallery-item glass-element" data-caption="Cake Time!">
                     <img src="image/4.png" alt="Birthday cake">
                     <div class="gallery-overlay">
                         <h3>Redball Time!</h3>
                         <p>The most delicious Redball ever</p>
                     </div>
                 </div>
-                <div class="gallery-item" data-caption="Friends Forever">
+                <div class="gallery-item glass-element" data-caption="Friends Forever">
                     <img src="image/3.png" alt="Friends celebrating">
                     <div class="gallery-overlay">
                         <h3>Birthday Surprise</h3>
                         <p>The moment of pure joy and surprise</p>
                     </div>
                 </div>
-                <div class="gallery-item" data-caption="Birthday Surprise">
+                <div class="gallery-item glass-element" data-caption="Birthday Surprise">
                     <img src="image/5.png" alt="Birthday surprise">
                     <div class="gallery-overlay">
                         <h3>Best Orange Juice</h3>
                         <p>Yes, you love it</p>
                     </div>
                 </div>
-                <div class="gallery-item" data-caption="Party Decorations">
+                <div class="gallery-item glass-element" data-caption="Party Decorations">
                     <img src="image/2.png" alt="Party decorations">
                     <div class="gallery-overlay">
                         <h3>El - Khodod ya 3am</h3>
                         <p>Asli nefsy arga3 be5dod</p>
                     </div>
                 </div>
-                <div class="gallery-item" data-caption="Group Photo">
+                <div class="gallery-item glass-element" data-caption="Group Photo">
                     <img src="image/6.png" alt="Group photo">
                     <div class="gallery-overlay">
                         <h3>Pizaa Ransh</h3>
@@ -119,7 +114,7 @@
             </div>
 
             <div class="gallery-slideshow" id="gallerySlideshow" style="display: none;">
-                <div class="slideshow-container">
+                <div class="slideshow-container glass-element">
                     <div class="slide active">
                         <img src="image/2.png" alt="Birthday celebration">
                         <div class="slide-caption">El - Khodod ya 3am</div>
@@ -133,8 +128,8 @@
                         <div class="slide-caption">Friends Forever - Celebrating with the best people</div>
                     </div>
                 </div>
-                <button class="slide-btn prev" id="prevSlideBtn">❮</button>
-                <button class="slide-btn next" id="nextSlideBtn">❯</button>
+                <button class="slide-btn prev glass-btn" id="prevSlideBtn">❮</button>
+                <button class="slide-btn next glass-btn" id="nextSlideBtn">❯</button>
                 <div class="slide-indicators">
                     <span class="indicator active" data-slide="0"></span>
                     <span class="indicator" data-slide="1"></span>
@@ -145,9 +140,9 @@
     </section>
 
     <section id="music" class="music-section">
-        <div class="container">
+        <div class="container glass-panel">
             <h2 class="section-title">🎵 Birthday Playlist</h2>
-            <div class="music-player">
+            <div class="music-player glass-element">
                 <div class="player-display">
                     <div class="album-art">
                         <div class="vinyl-record" id="vinylRecord">
@@ -180,19 +175,28 @@
                     <input type="range" id="volumeSlider" min="0" max="100" value="50">
                 </div>
 
-                <div class="playlist">
-                    <h4>🎶 Playlist</h4>
+                <div class="playlist playlist-3d">
+                    <h4>🎶 Up Next</h4>
                     <div class="playlist-item active" data-track="0">
-                        <span>1. Happy Birthday Song</span>
-                        <span>2:30</span>
+                        <div class="track-left">
+                            <span class="track-icon">🎧</span>
+                            <span class="track-name">Happy Birthday Song</span>
+                        </div>
+                        <span class="track-time">2:30</span>
                     </div>
                     <div class="playlist-item" data-track="1">
-                        <span>2. Celebration Time</span>
-                        <span>3:15</span>
+                        <div class="track-left">
+                            <span class="track-icon">💿</span>
+                            <span class="track-name">Celebration Time</span>
+                        </div>
+                        <span class="track-time">3:15</span>
                     </div>
                     <div class="playlist-item" data-track="2">
-                        <span>3. Party Anthem</span>
-                        <span>2:45</span>
+                        <div class="track-left">
+                            <span class="track-icon">🔥</span>
+                            <span class="track-name">Party Anthem</span>
+                        </div>
+                        <span class="track-time">2:45</span>
                     </div>
                 </div>
 
@@ -204,10 +208,10 @@
     </section>
 
     <section id="game" class="game-section">
-        <div class="container">
+        <div class="container glass-panel">
             <h2 class="section-title">🧩 Birthday Puzzle Challenge</h2>
             <div class="game-controls">
-                <div class="difficulty-selector">
+                <div class="difficulty-selector glass-element">
                     <label>Difficulty:</label>
                     <select id="difficultySelect">
                         <option value="easy">Easy (3x3)</option>
@@ -216,11 +220,11 @@
                     </select>
                 </div>
                 <div class="game-stats">
-                    <div class="stat">
+                    <div class="stat glass-element">
                         <span>Time:</span>
                         <span id="gameTimer">00:00</span>
                     </div>
-                    <div class="stat">
+                    <div class="stat glass-element">
                         <span>Moves:</span>
                         <span id="moveCounter">0</span>
                     </div>
@@ -230,16 +234,16 @@
             </div>
 
             <div class="puzzle-container">
-                <div class="puzzle-board" id="puzzleBoard">
-                    </div>
-                <div class="solution-preview" id="solutionPreview">
+                <div class="puzzle-board glass-element" id="puzzleBoard">
+                </div>
+                <div class="solution-preview glass-element" id="solutionPreview">
                     <h4>Solution Preview:</h4>
                     <img src="" alt="Solution" id="solutionImage">
                 </div>
             </div>
 
             <div class="game-completion" id="gameCompletion" style="display: none;">
-                <div class="completion-message">
+                <div class="completion-message glass-element">
                     <h3>🎉 Congratulations! 🎉</h3>
                     <p>You solved the puzzle!</p>
                     <p>Time: <span id="finalTime"></span></p>
@@ -251,29 +255,29 @@
     </section>
 
     <section id="countdown" class="countdown-section">
-        <div class="container">
+        <div class="container glass-panel">
             <h2 class="section-title">⏰ The Next Birthday Countdown</h2>
             <div class="countdown-container">
                 <div class="countdown-display" id="countdownDisplay">
-                    <div class="time-unit">
+                    <div class="time-unit glass-element">
                         <span class="time-number" id="days">00</span>
                         <span class="time-label">Days</span>
                     </div>
-                    <div class="time-unit">
+                    <div class="time-unit glass-element">
                         <span class="time-number" id="hours">00</span>
                         <span class="time-label">Hours</span>
                     </div>
-                    <div class="time-unit">
+                    <div class="time-unit glass-element">
                         <span class="time-number" id="minutes">00</span>
                         <span class="time-label">Minutes</span>
                     </div>
-                    <div class="time-unit">
+                    <div class="time-unit glass-element">
                         <span class="time-number" id="seconds">00</span>
                         <span class="time-label">Seconds</span>
                     </div>
                 </div>
 
-                <div class="countdown-message" id="countdownMessage">
+                <div class="countdown-message glass-element" id="countdownMessage">
                     <p>Counting down to the big day!</p>
                 </div>
             </div>
@@ -282,7 +286,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 Birthday Celebration Website. Made with ❤️ for you Fatma! </p>
+            <p>&copy; 2026 Fatma's Day Celebration. Made with ❤️ </p>
             <div class="footer-links">
                 <a href="#home">Home</a>
                 <a href="#gallery">Gallery</a>

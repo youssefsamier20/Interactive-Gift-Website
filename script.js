@@ -9,38 +9,38 @@ let currentDifficulty = 'easy';
 let puzzlePieces = [];
 let countdownInterval;
 let targetBirthday = null;
-let selectedPiece = null; // متغير جديد عشان الموبايل التاتش
+let selectedPiece = null;
 
-// Audio tracks (using placeholder URLs - in real implementation, you'd have actual audio files)
+// Audio tracks
 const audioTracks = [
     {
         title: "Happy Birthday Song",
         artist: "Birthday Collection",
         duration: "2:30",
-        src: "audio/22.mp3"  // Update this path
+        src: "audio/22.mp3"
     },
     {
         title: "Celebration Time",
         artist: "Party Hits",
         duration: "3:15",
-        src: "audio/23.mp3"  // Update this path
+        src: "audio/23.mp3"
     },
     {
         title: "Party Anthem",
         artist: "Birthday Beats",
         duration: "2:45",
-        src: "audio/24.mp3"  // Update this path
+        src: "audio/24.mp3"
     }
 ];
 
 // Gallery images for puzzle
 const puzzleImages = [
-    "image/1.png", // Update this path
-    "image/2.png", // Update this path
-    "image/3.png", // Update this path
-    "image/4.png", // Update this path
-    "image/5.png", // Update this path
-    "image/6.png"  // Update this path
+    "image/1.png",
+    "image/2.png",
+    "image/3.png",
+    "image/4.png",
+    "image/5.png",
+    "image/6.png"
 ]
 
 // DOM Elements
@@ -95,37 +95,36 @@ function initializeEventListeners() {
         nextSlideBtn.addEventListener('click', () => changeSlide(1));
     }
     
-    // Music player controls
-    const audio = document.getElementById("audioPlayer");
-    const trackTitle = document.getElementById("trackTitle");
-    const trackArtist = document.getElementById("trackArtist");
-
-    let currentTrackIndex = 0;
-
-    function loadTrack(index) {
-        const track = audioTracks[index];
-        audio.src = track.src;
-        trackTitle.textContent = track.title;
-        trackArtist.textContent = track.artist;
+    // Music player controls - التعديل هنا لربط الوظائف ببعضها
+    if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', togglePlay);
     }
 
-    loadTrack(currentTrackIndex);
+    const prevTrackBtn = document.getElementById('prevTrackBtn');
+    const nextTrackBtn = document.getElementById('nextTrackBtn');
 
-    document.getElementById("playPauseBtn").addEventListener("click", () => {
-        if (audio.paused) {
-            audio.play();
-            document.getElementById("playPauseBtn").textContent = "⏸️";
-        } else {
-            audio.pause();
-            document.getElementById("playPauseBtn").textContent = "▶️";
-        }
-    });
+    if (prevTrackBtn) {
+        prevTrackBtn.addEventListener('click', previousTrack);
+    }
+
+    if (nextTrackBtn) {
+        nextTrackBtn.addEventListener('click', nextTrack);
+    }
+    
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', changeVolume);
+    }
 
     // Playlist items
     const playlistItems = document.querySelectorAll('.playlist-item');
     playlistItems.forEach((item, index) => {
         item.addEventListener('click', () => selectTrack(index));
     });
+
+    // تشغيل الأغنية التالية تلقائياً عند انتهاء الحالية
+    if (audioPlayer) {
+        audioPlayer.addEventListener('ended', nextTrack);
+    }
     
     // Game controls
     const difficultySelect = document.getElementById('difficultySelect');
@@ -246,11 +245,7 @@ function createParticles() {
 
 function celebrateNow() {
     triggerConfettiExplosion();
-    if (audioPlayer && !audioPlayer.src) {
-        showCelebrationMessage();
-    } else {
-        togglePlay();
-    }
+    togglePlay(); // تشغيل الأغنية مباشرة عند بدء الاحتفال
     const gallerySection = document.getElementById('gallery');
     if (gallerySection) {
         const offsetTop = gallerySection.offsetTop - 80;
@@ -278,33 +273,6 @@ function triggerConfettiExplosion() {
             }
         }, 3000);
     }
-}
-
-function showCelebrationMessage() {
-    const message = document.createElement('div');
-    message.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(45deg, #ff6b9d, #4ecdc4);
-        color: white;
-        padding: 2rem;
-        border-radius: 20px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        z-index: 2000;
-        animation: celebrationPop 0.5s ease-out;
-        text-align: center;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-    `;
-    message.innerHTML = '🎉 Let the celebration begin! 🎉';
-    document.body.appendChild(message);
-    setTimeout(() => {
-        if (message.parentNode) {
-            message.parentNode.removeChild(message);
-        }
-    }, 3000);
 }
 
 // Gallery Functions
@@ -340,7 +308,6 @@ function changeView(viewType) {
     } else if (viewType === 'slideshow') {
         gridView.style.display = 'none';
         slideshowView.style.display = 'block';
-        startSlideshow();
     }
 }
 
@@ -376,31 +343,36 @@ function jumpToSlide(slideIndex) {
     indicators[currentSlideIndex].classList.add('active');
 }
 
-function startSlideshow() {
-    setInterval(() => {
-        changeSlide(1);
-    }, 5000);
-}
-
-// Music Player Functions
+// Music Player Functions - الدوال المعدلة بالكامل
 function initializeMusicPlayer() {
+    if (audioPlayer) {
+        audioPlayer.src = audioTracks[currentTrack].src;
+        audioPlayer.volume = volumeSlider ? volumeSlider.value / 100 : 0.5;
+    }
     updateTrackDisplay();
     if (durationDisplay) {
         durationDisplay.textContent = audioTracks[currentTrack].duration;
     }
-    const progressContainer = document.querySelector('.progress-bar');
+    const progressContainer = document.querySelector('.progress-container');
     if (progressContainer) {
         progressContainer.addEventListener('click', seek);
     }
-    setInterval(updateProgressBar, 1000);
+    setInterval(updateProgressBar, 500);
 }
 
 function togglePlay() {
-    isPlaying = !isPlaying;
-    if (isPlaying) {
+    if (!audioPlayer.src) {
+        audioPlayer.src = audioTracks[currentTrack].src;
+    }
+    
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+        isPlaying = true;
         if (playPauseBtn) playPauseBtn.textContent = '⏸️';
         if (vinylRecord) vinylRecord.classList.add('playing');
     } else {
+        audioPlayer.pause();
+        isPlaying = false;
         if (playPauseBtn) playPauseBtn.textContent = '▶️';
         if (vinylRecord) vinylRecord.classList.remove('playing');
     }
@@ -417,10 +389,9 @@ function nextTrack() {
 }
 
 function selectTrack(trackIndex) {
-    const playlistItems = document.querySelectorAll('.playlist-item');
-    playlistItems.forEach(item => item.classList.remove('active'));
-    if (playlistItems[trackIndex]) {
-        playlistItems[trackIndex].classList.add('active');
+    if (currentTrack === trackIndex) {
+        togglePlay(); 
+        return;
     }
     currentTrack = trackIndex;
     switchTrack();
@@ -428,9 +399,18 @@ function selectTrack(trackIndex) {
 
 function switchTrack() {
     updateTrackDisplay();
+    
+    if (audioPlayer) {
+        audioPlayer.src = audioTracks[currentTrack].src;
+        if (isPlaying) {
+            audioPlayer.play();
+        }
+    }
+    
     if (progressBar) progressBar.style.width = '0%';
     if (currentTimeDisplay) currentTimeDisplay.textContent = '0:00';
     if (durationDisplay) durationDisplay.textContent = audioTracks[currentTrack].duration;
+    
     const playlistItems = document.querySelectorAll('.playlist-item');
     playlistItems.forEach((item, index) => {
         item.classList.toggle('active', index === currentTrack);
@@ -446,8 +426,8 @@ function updateTrackDisplay() {
 }
 
 function changeVolume() {
-    if (!volumeSlider) return;
-    const volume = volumeSlider.value / 100;
+    if (!volumeSlider || !audioPlayer) return;
+    audioPlayer.volume = volumeSlider.value / 100;
 }
 
 function seek(e) {
@@ -455,24 +435,22 @@ function seek(e) {
     const rect = progressContainer.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const width = rect.width;
-    const percentage = (clickX / width) * 100;
-    if (progressBar) {
-        progressBar.style.width = percentage + '%';
+    const percentage = clickX / width;
+    
+    if (audioPlayer && audioPlayer.duration) {
+        audioPlayer.currentTime = percentage * audioPlayer.duration;
     }
 }
 
 function updateProgressBar() {
-    if (isPlaying && progressBar) {
-        let currentWidth = parseFloat(progressBar.style.width) || 0;
-        currentWidth += 0.5;
-        if (currentWidth >= 100) {
-            currentWidth = 0;
-            nextTrack();
+    if (audioPlayer && !audioPlayer.paused && audioPlayer.duration) {
+        const percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        if (progressBar) {
+            progressBar.style.width = percentage + '%';
         }
-        progressBar.style.width = currentWidth + '%';
         if (currentTimeDisplay) {
-            const minutes = Math.floor(currentWidth * 0.03);
-            const seconds = Math.floor((currentWidth * 1.8) % 60);
+            const minutes = Math.floor(audioPlayer.currentTime / 60);
+            const seconds = Math.floor(audioPlayer.currentTime % 60);
             currentTimeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
     }
@@ -506,7 +484,7 @@ function startNewGame() {
     clearInterval(gameTimer);
     gameStartTime = Date.now();
     moveCount = 0;
-    selectedPiece = null; // Reset selection
+    selectedPiece = null;
     updateGameStats();
     
     generatePuzzle();
@@ -550,14 +528,11 @@ function generatePuzzle() {
         piece.style.backgroundPosition = `${bgPosX}% ${bgPosY}%`;
         piece.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
         
-        // Mouse Drag Events (For PC)
         piece.draggable = true;
         piece.addEventListener('dragstart', handleDragStart);
         piece.addEventListener('dragover', handleDragOver);
         piece.addEventListener('drop', handleDrop);
         piece.addEventListener('dragend', handleDragEnd);
-        
-        // Touch / Click Events (For Mobile and PC fallback)
         piece.addEventListener('click', handlePieceClick);
         
         puzzleBoard.appendChild(piece);
@@ -581,14 +556,11 @@ function shufflePuzzle() {
     });
 }
 
-// ---- Game Logic: Swap Function ----
 function handleSwap(piece1, piece2) {
-    // 1. Swap the dataset positions
     const tempPos = piece1.dataset.position;
     piece1.dataset.position = piece2.dataset.position;
     piece2.dataset.position = tempPos;
     
-    // 2. Safely swap DOM elements using a temporary placeholder
     const temp = document.createElement('div');
     piece1.parentNode.insertBefore(temp, piece1);
     piece2.parentNode.insertBefore(piece1, piece2);
@@ -600,7 +572,6 @@ function handleSwap(piece1, piece2) {
     checkPuzzleCompletion();
 }
 
-// ---- Game Logic: Drag & Drop (PC) ----
 let draggedElement = null;
 
 function handleDragStart(e) {
@@ -624,21 +595,16 @@ function handleDragEnd(e) {
     draggedElement = null;
 }
 
-// ---- Game Logic: Click/Tap to Swap (Mobile) ----
 function handlePieceClick(e) {
     const clickedPiece = e.target;
     
     if (!selectedPiece) {
-        // لو مفيش قطعة متحددة، نحدد دي
         selectedPiece = clickedPiece;
         clickedPiece.classList.add('selected');
     } else {
-        // لو في قطعة متحددة من الأول
         if (selectedPiece !== clickedPiece) {
-            // لو داس على قطعة تانية، نبدلهم
             handleSwap(selectedPiece, clickedPiece);
         }
-        // في كل الحالات (بدّل أو داس على نفس القطعة مرتين) بنشيل التحديد
         selectedPiece.classList.remove('selected');
         selectedPiece = null;
     }
@@ -707,7 +673,7 @@ function updateGameStats() {
 function getNextBirthday() {
     const now = new Date();
     const currentYear = now.getFullYear();
-    let target = new Date(currentYear, 1, 16, 0, 0, 0);
+    let target = new Date(currentYear, 1, 16, 0, 0, 0); // 16 February
     
     if (now.getTime() >= target.getTime() + (24 * 60 * 60 * 1000)) {
         target.setFullYear(currentYear + 1);
@@ -761,24 +727,9 @@ function calculateTimeRemaining() {
     if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
     if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
     if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
-    
-    if (messageDiv) {
-        messageDiv.classList.remove('birthday-celebration');
-        if (days > 1) {
-            messageDiv.innerHTML = `<p>🎂 ${days} days until the special day!</p>`;
-        } else if (days === 1) {
-            messageDiv.innerHTML = '<p>🎉 Tomorrow is the big day!</p>';
-        } else if (hours > 1) {
-            messageDiv.innerHTML = `<p>⏰ Just ${hours} hours to go!</p>`;
-        } else if (minutes > 1) {
-            messageDiv.innerHTML = `<p>⏱️ Only ${minutes} minutes left!</p>`;
-        } else {
-            messageDiv.innerHTML = `<p>⚡ ${seconds} seconds until birthday time!</p>`;
-        }
-    }
 }
 
-// Intersection Observer for scroll animations
+// Scroll animations
 function initializeScrollAnimations() {
     const observerOptions = {
         threshold: 0.1,
@@ -798,77 +749,57 @@ function initializeScrollAnimations() {
         observer.observe(section);
     });
 }
+// --- New Features Logic ---
 
-document.addEventListener('DOMContentLoaded', initializeScrollAnimations);
-
-// Keyboard navigation support
-document.addEventListener('keydown', function(e) {
-    const slideshowView = document.getElementById('gallerySlideshow');
-    if (slideshowView && slideshowView.style.display !== 'none') {
-        if (e.key === 'ArrowLeft') {
-            changeSlide(-1);
-        } else if (e.key === 'ArrowRight') {
-            changeSlide(1);
-        }
-    }
-    if (e.key === ' ' && e.target.tagName !== 'INPUT') {
-        e.preventDefault();
-        togglePlay();
-    }
-    if (e.key === 'n' && e.ctrlKey) {
-        e.preventDefault();
-        startNewGame();
-    }
-});
-
-// Window resize handler
-window.addEventListener('resize', function() {
-    if (window.innerWidth <= 768) {
-        changeView('grid');
-    }
-});
-
-// Page visibility change handler
-document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-        if (isPlaying) {
-            togglePlay();
-        }
-    }
-});
-
-// Error handling for images
-document.querySelectorAll('img').forEach(img => {
-    img.addEventListener('error', function() {
-        this.src = 'https://via.placeholder.com/300x200/ff6b9d/ffffff?text=Birthday+Image';
-    });
-});
-
-// Touch support for mobile devices
-let touchStartX = 0;
-let touchEndX = 0;
-
-document.addEventListener('touchstart', function(e) {
-    touchStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener('touchend', function(e) {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-});
-
-function handleSwipe() {
-    const swipeThreshold = 50;
-    const diff = touchStartX - touchEndX;
+// 1. Logo Surprise (3D Flip + Heart Confetti)
+function triggerHeartsSurprise() {
+    const logo = document.getElementById('surpriseLogo');
+    // Add the 3D flip class
+    logo.classList.add('flip-3d');
     
-    if (Math.abs(diff) > swipeThreshold) {
-        const slideshowView = document.getElementById('gallerySlideshow');
-        if (slideshowView && slideshowView.style.display !== 'none') {
-            if (diff > 0) {
-                changeSlide(1);
-            } else {
-                changeSlide(-1);
+    // Remove the class after animation completes so it can be clicked again
+    setTimeout(() => {
+        logo.classList.remove('flip-3d');
+    }, 1000);
+
+    // Trigger Custom Hearts Explosion
+    createHeartConfetti();
+}
+
+function createHeartConfetti() {
+    const container = document.getElementById('confettiContainer');
+    if (!container) return;
+    
+    const hearts = ['❤️', '💖', '💜', '✨', '🎂'];
+    
+    for (let i = 0; i < 50; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'confetti heart-confetti';
+        heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+        
+        container.appendChild(heart);
+        
+        // Remove after animation
+        setTimeout(() => {
+            if (heart.parentNode) {
+                heart.parentNode.removeChild(heart);
             }
-        }
+        }, 4000);
     }
 }
+
+// 2. Interactive Wish Text Hover
+function makeWishGlow(element) {
+    element.innerText = 'May all your dreams come true! 🌟';
+    element.classList.add('glow');
+}
+
+function resetWish(element) {
+    element.innerText = '✨ Hover to make a wish ✨';
+    element.classList.remove('glow');
+}
+
+document.addEventListener('DOMContentLoaded', initializeScrollAnimations);
