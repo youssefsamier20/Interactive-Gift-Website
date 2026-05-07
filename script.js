@@ -1,4 +1,3 @@
-// Global Variables
 let currentSlideIndex = 0;
 let currentTrack = 0;
 let isPlaying = false;
@@ -11,7 +10,6 @@ let countdownInterval;
 let targetBirthday = null;
 let selectedPiece = null;
 
-// Audio tracks
 const audioTracks = [
     {
         title: "Happy Birthday Song",
@@ -33,7 +31,6 @@ const audioTracks = [
     }
 ];
 
-// Gallery images for puzzle
 const puzzleImages = [
     "image/1.png",
     "image/2.png",
@@ -43,7 +40,6 @@ const puzzleImages = [
     "image/6.png"
 ]
 
-// DOM Elements
 const audioPlayer = document.getElementById('audioPlayer');
 const playPauseBtn = document.getElementById('playPauseBtn');
 const progressBar = document.getElementById('progress');
@@ -52,7 +48,6 @@ const durationDisplay = document.getElementById('duration');
 const volumeSlider = document.getElementById('volumeSlider');
 const vinylRecord = document.getElementById('vinylRecord');
 
-// Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
     initializeBackgroundAnimations();
@@ -63,15 +58,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeEventListeners();
 });
 
-// Initialize event listeners
 function initializeEventListeners() {
-    // Celebrate button
     const celebrateBtn = document.getElementById('celebrateBtn');
     if (celebrateBtn) {
         celebrateBtn.addEventListener('click', celebrateNow);
     }
     
-    // Gallery controls
     const gridViewBtn = document.getElementById('gridViewBtn');
     const slideshowViewBtn = document.getElementById('slideshowViewBtn');
     
@@ -83,7 +75,6 @@ function initializeEventListeners() {
         slideshowViewBtn.addEventListener('click', () => changeView('slideshow'));
     }
     
-    // Slideshow controls
     const prevSlideBtn = document.getElementById('prevSlideBtn');
     const nextSlideBtn = document.getElementById('nextSlideBtn');
     
@@ -95,7 +86,6 @@ function initializeEventListeners() {
         nextSlideBtn.addEventListener('click', () => changeSlide(1));
     }
     
-    // Music player controls - التعديل هنا لربط الوظائف ببعضها
     if (playPauseBtn) {
         playPauseBtn.addEventListener('click', togglePlay);
     }
@@ -115,18 +105,15 @@ function initializeEventListeners() {
         volumeSlider.addEventListener('input', changeVolume);
     }
 
-    // Playlist items
     const playlistItems = document.querySelectorAll('.playlist-item');
     playlistItems.forEach((item, index) => {
         item.addEventListener('click', () => selectTrack(index));
     });
 
-    // تشغيل الأغنية التالية تلقائياً عند انتهاء الحالية
     if (audioPlayer) {
         audioPlayer.addEventListener('ended', nextTrack);
     }
     
-    // Game controls
     const difficultySelect = document.getElementById('difficultySelect');
     const newGameBtn = document.getElementById('newGameBtn');
     const showSolutionBtn = document.getElementById('showSolutionBtn');
@@ -148,14 +135,12 @@ function initializeEventListeners() {
         playAgainBtn.addEventListener('click', startNewGame);
     }
     
-    // Slide indicators
     const indicators = document.querySelectorAll('.indicator');
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => jumpToSlide(index));
     });
 }
 
-// Navigation Functions
 function initializeNavigation() {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
@@ -205,7 +190,6 @@ function initializeNavigation() {
     });
 }
 
-// Background Animation Functions
 function initializeBackgroundAnimations() {
     createConfetti();
     createParticles();
@@ -245,7 +229,7 @@ function createParticles() {
 
 function celebrateNow() {
     triggerConfettiExplosion();
-    togglePlay(); // تشغيل الأغنية مباشرة عند بدء الاحتفال
+    togglePlay(); 
     const gallerySection = document.getElementById('gallery');
     if (gallerySection) {
         const offsetTop = gallerySection.offsetTop - 80;
@@ -275,7 +259,6 @@ function triggerConfettiExplosion() {
     }
 }
 
-// Gallery Functions
 function initializeGallery() {
     const galleryItems = document.querySelectorAll('.gallery-item');
     const observer = new IntersectionObserver((entries) => {
@@ -343,7 +326,6 @@ function jumpToSlide(slideIndex) {
     indicators[currentSlideIndex].classList.add('active');
 }
 
-// Music Player Functions - الدوال المعدلة بالكامل
 function initializeMusicPlayer() {
     if (audioPlayer) {
         audioPlayer.src = audioTracks[currentTrack].src;
@@ -456,7 +438,6 @@ function updateProgressBar() {
     }
 }
 
-// Puzzle Game Functions
 function initializePuzzleGame() {
     changeDifficulty();
 }
@@ -669,11 +650,10 @@ function updateGameStats() {
     }
 }
 
-// Countdown Functions
 function getNextBirthday() {
     const now = new Date();
     const currentYear = now.getFullYear();
-    let target = new Date(currentYear, 1, 16, 0, 0, 0); // 16 February
+    let target = new Date(currentYear, 1, 16, 0, 0, 0); 
     
     if (now.getTime() >= target.getTime() + (24 * 60 * 60 * 1000)) {
         target.setFullYear(currentYear + 1);
@@ -729,7 +709,6 @@ function calculateTimeRemaining() {
     if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
 }
 
-// Scroll animations
 function initializeScrollAnimations() {
     const observerOptions = {
         threshold: 0.1,
@@ -749,20 +728,15 @@ function initializeScrollAnimations() {
         observer.observe(section);
     });
 }
-// --- New Features Logic ---
 
-// 1. Logo Surprise (3D Flip + Heart Confetti)
 function triggerHeartsSurprise() {
     const logo = document.getElementById('surpriseLogo');
-    // Add the 3D flip class
     logo.classList.add('flip-3d');
     
-    // Remove the class after animation completes so it can be clicked again
     setTimeout(() => {
         logo.classList.remove('flip-3d');
     }, 1000);
 
-    // Trigger Custom Hearts Explosion
     createHeartConfetti();
 }
 
@@ -782,7 +756,6 @@ function createHeartConfetti() {
         
         container.appendChild(heart);
         
-        // Remove after animation
         setTimeout(() => {
             if (heart.parentNode) {
                 heart.parentNode.removeChild(heart);
@@ -791,7 +764,6 @@ function createHeartConfetti() {
     }
 }
 
-// 2. Interactive Wish Text Hover
 function makeWishGlow(element) {
     element.innerText = 'May all your dreams come true! 🌟';
     element.classList.add('glow');
